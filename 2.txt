@@ -1,0 +1,19 @@
+enum status {on, off}; 
+enum state {frost, hot}; 
+
+
+
+class Conditioner {
+	status power;
+	status supply;
+	state mode;
+	int time;
+	void ChangeMode();
+	void TakeOn();
+	void PushSupply();
+	void Ready();
+	void ShowMenu();
+public:
+	Conditioner();
+	void Run();
+};

@@ -1,0 +1,101 @@
+#include "aircond.h"
+#include <stdio.h>
+#include <conio.h>
+#include <windows.h>
+
+
+Conditioner::Conditioner() {
+	supply = off;
+	power = off;
+	mode = frost;
+}
+
+void Conditioner::ChangeMode() {
+	if(supply==off) {
+		if (mode==frost) {
+		    mode=hot;
+		    printf ("Режим изменен на обогрев!\n");
+		}
+		else {
+		    mode = frost;
+		    printf("Режим изменен на охлаждение!\n");
+		}
+	}
+	else {
+	printf("Пожалуйста, выключите питание кондиционера для смены режима работы!\n");
+	}
+}
+
+
+void Conditioner::TakeOn() {
+	if(supply==on) {
+		if (power==off) {
+			power=on;
+	        time=60;
+	          if (mode==frost) {
+		          printf ("Кондиционер запущен в режиме охлаждения!\a\n");
+		          }
+		      else {
+		          printf("Кондиционер запущен в режиме обогрева!\a\n");
+		          }
+		}
+		else {
+		time+=60;
+		printf("Добавлена минута!\a\n");
+		}
+	}
+	else printf("Пожалуйста, включите питание кондиционера!\n");
+}
+
+void Conditioner::Ready() {	
+	power=off; 
+	time=-1; 
+	printf("\aВремя работы истекло!\n");
+}
+
+void Conditioner::ShowMenu() {
+	printf("\n1 - Включить кондиционер\n");
+	printf("2 - Сменить режим работы кондиционера\n");
+	printf("3 - Включить/выключить питание кондиционера\n");
+	printf("ESC - выход\n\n");
+}
+
+void Conditioner::Run() {
+    int key;
+	do
+	{
+		while (!kbhit() && time>0) 
+		{
+			time--; 
+			Sleep(100); 
+			printf("Осталось %d секунд\n",time);
+		}
+		if (time==0) 
+			Ready();
+		ShowMenu();
+		key=getch(); 
+		switch (key)
+		{	
+		    case '1': TakeOn(); break;
+			case '2': ChangeMode(); break;
+			case '3': PushSupply(); break;
+		}
+		fflush(stdin);
+	}
+	while(key!=27);
+
+	
+}
+
+void Conditioner::PushSupply() {
+	if(supply==off) {
+	supply = on;
+	//TakeOn();
+	printf("Питание включено!\a\n");
+	}
+	else {
+	supply = off;
+	time=0;
+	printf("Питание выключено!\a\n");
+	}
+}
